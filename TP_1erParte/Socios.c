@@ -37,12 +37,12 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
     //leer socios
     while(fgets(registro,sizeof(registro),archTxt) != NULL)
     {
-        printf("Registro txt a validar: %s",registro);
+        //printf("Registro txt a validar: %s",registro);
         strcpy(registroOriginal, registro);
         trozarRegistro(&socio,registro);
 
         //validar socio
-        if(validarSocio(&socio, fechaProceso) == TODO_OK)
+        if(validarSocio(&socio, fechaProceso, 0) == TODO_OK)
         {
             //cargar socio bin correcto
             puts("Socio correcto");
@@ -64,19 +64,21 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
     return TODO_OK;
 }
 
-int validarSocio(T_Socio* socio, T_Fecha* fechaProceso)//agregar flag para printear datos invalidos
+int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
 {
     int resp;
 
-    if(socio->dni < 10000 || socio->dni >100000000)     //validar DNI 10.000 < DNI < 100.000.000
+    if(socio->dni < 10000 || socio->dni >100000000) //validar DNI 10.000 < DNI < 100.000.000
     {
-        puts("dni no valido");
+        if(avisarError)
+            puts("dni no valido");
         return SOCIO_INVALIDO;
     }
 
-    if( validarFecha(&socio->fechaNac)!=ES_FECHA)     //validar fecha nac Validación formal y < fecha de proceso – 10 años
+    if( validarFecha(&socio->fechaNac)!=ES_FECHA) //validar fecha nac Validación formal y < fecha de proceso – 10 años
     {
-        puts("fecha nac no es fecha");
+        if(avisarError)
+            puts("fecha nac no es fecha");
         return SOCIO_INVALIDO;
     }
 
@@ -86,55 +88,63 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso)//agregar flag para print
 
     if(resp != FECHA_2_MAYOR)
     {
-        puts("fecha nac mayor a fecha proceso");
+        if(avisarError)
+            puts("fecha nac mayor a fecha proceso");
         return SOCIO_INVALIDO;
     }
 
     if(socio->sexo != 'F' && socio->sexo != 'M') //validar sexo F o M
     {
-        puts("sexo incorrecto");
+        if(avisarError)
+            puts("sexo incorrecto");
         return SOCIO_INVALIDO;
     }
 
     resp = compararFechas(&socio->fechaAfil, &socio->fechaNac); //validar fecha afiliacion Validación formal, <= fecha de proceso y > fecha nacimiento
     if(resp != FECHA_1_MAYOR)
     {
-        puts("fecha afiliacion menor a fecha nac");
+        if(avisarError)
+            puts("fecha afiliacion menor a fecha nac");
         return SOCIO_INVALIDO;
     }
 
     resp = compararFechas(&socio->fechaAfil,fechaProceso);
     if(resp==FECHA_1_MAYOR)
     {
-        puts("fecha afiliacion mayor a fecha proceso");
+        if(avisarError)
+            puts("fecha afiliacion mayor a fecha proceso");
         return SOCIO_INVALIDO;
     }
 
     //validar categoria MENOR ADULTO VITALICIO u HONORARIO
-    if(strcmp(socio->categoria,"MENOR") && strcmp(socio->categoria,"ADULTO") && strcmp(socio->categoria,"VITALICIO") && strcmp(socio->categoria,"HONORARIO"))
+    if(strcmp(socio->categoria, "MENOR") != 0 && strcmp(socio->categoria, "ADULTO") != 0 && strcmp(socio->categoria, "VITALICIO") != 0 && strcmp(socio->categoria, "HONORARIO") != 0)
     {
-        puts("categoria invalida");
+        if(avisarError)
+            puts("categoria invalida");
         return SOCIO_INVALIDO;
     }
 
     resp = compararFechas(&socio->fechaCuota,&socio->fechaAfil); //validar fecha cuota > fecha de afiliación y <= fecha de proceso
     if(resp != FECHA_1_MAYOR)
     {
-        puts("fecha cuota menor a fecha afiliacion");
+        if(avisarError)
+            puts("fecha cuota menor a fecha afiliacion");
         return SOCIO_INVALIDO;
     }
 
     resp = compararFechas(&socio->fechaCuota,fechaProceso);
     if(resp == FECHA_1_MAYOR)
     {
-        puts("fecha cuota mayor a fecha proceso");
+        if(avisarError)
+            puts("fecha cuota mayor a fecha proceso");
         return SOCIO_INVALIDO;
     }
 
     //validar estado, A o B
     if(socio->estado != 'A' && socio->estado != 'B')
     {
-        puts("estado invalido");
+        if(avisarError)
+            puts("estado invalido");
         return SOCIO_INVALIDO;
     }
 
@@ -147,31 +157,31 @@ void trozarRegistro(T_Socio *socio, char* linea)
     char* pos = strchr(linea,'\n');
     *pos = '\0';
 
-    pos = strrchr(linea,',');
+    pos = strrchr(linea,';');
     sscanf(pos+1,"%c",&socio->estado);
     *pos = '\0';
 
-    pos = strrchr(linea,',');
+    pos = strrchr(linea,';');
     sscanf(pos+1,"%d/%d/%d",&socio->fechaCuota.d,&socio->fechaCuota.m,&socio->fechaCuota.y);
     *pos = '\0';
 
-    pos = strrchr(linea,',');
+    pos = strrchr(linea,';');
     strcpy(socio->categoria, pos + 1);
     *pos = '\0';
 
-    pos = strrchr(linea,',');
+    pos = strrchr(linea,';');
     sscanf(pos+1,"%d/%d/%d",&socio->fechaAfil.d,&socio->fechaAfil.m,&socio->fechaAfil.y);
     *pos = '\0';
 
-    pos = strrchr(linea,',');
+    pos = strrchr(linea,';');
     sscanf(pos+1,"%c",&socio->sexo);
     *pos = '\0';
 
-    pos = strrchr(linea,',');
+    pos = strrchr(linea,';');
     sscanf(pos+1,"%d/%d/%d",&socio->fechaNac.d,&socio->fechaNac.m,&socio->fechaNac.y);
     *pos = '\0';
 
-    pos = strrchr(linea,',');
+    pos = strrchr(linea,';');
     strcpy(socio->apYN, pos + 1);
     *pos = '\0';
 
@@ -184,49 +194,35 @@ void normalizarNyAp(char* nyap)
     char* pos = nyap;
     char palAux[TAM_NYAP];
     char* posPal = palAux;
+    int comaAgregada = 0;
 
-    //Primer palabra normalizada
-    //busco la primer letra
-    while(*pos == ' ')
-        pos++;
-    //Primer letra a mayuscula
-    *posPal = toupper(*pos);
-    pos++;
-    posPal++;
-
-    while(*pos != ',' && *pos != ' ')
-    {
-        *posPal = tolower(*pos);
-        pos++;
-        posPal++;
-    }
-    *posPal = ',';
-    posPal++;
-    *posPal = ' ';
-    posPal++;
-
-    //Otros nombres
-    //verifico si hay una letra despues de la coma
     while(*pos!='\0')
     {
-        while(*pos!='\0' && (*pos == ' ' || *pos == ','))//salteo la coma en caso de que exista en la cadena
+        while(*pos!='\0' && (*pos == ' ' || *pos == ','))//busco primer caracter
             pos++;
 
         if(*pos!='\0')
         {
-            *posPal = toupper(*pos);
+            *posPal = toupper(*pos);//primer letra a mayuscula
             pos++;
             posPal++;
         }
 
-        while(*pos!='\0' && *pos != ' ')
+        while(*pos!='\0' && (*pos != ' ' && *pos != ','))
         {
-            *posPal = tolower(*pos);
+            *posPal = tolower(*pos);//resto de letras en minuscula
             pos++;
             posPal++;
         }
 
-        *posPal = ' ';
+        if(!comaAgregada)//agrego coma
+        {
+            *posPal = ',';
+            posPal++;
+            comaAgregada = 1;
+        }
+
+        *posPal = ' ';//finalizo con espacio
         posPal++;
     }
     //si viene un solo nombre sin apellido
@@ -234,6 +230,7 @@ void normalizarNyAp(char* nyap)
         *(posPal-2) = '\0';
     else
         *(posPal-1) = '\0';
+
     //se copia la palabra normalizada a la cadena original
     //printf("pal aux %s\n",palAux);
     strcpy(nyap,palAux);

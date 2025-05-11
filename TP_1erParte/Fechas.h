@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define ES_FECHA 2
 #define NO_ES_FECHA -2
@@ -22,5 +23,6 @@ typedef struct
 int ingresarFechaProceso(T_Fecha* fecha);
 int validarFecha(T_Fecha* fecha);
 int compararFechas(T_Fecha* f1, T_Fecha* f2);
+void obtenerFechaSystem(T_Fecha* fecha);
 
 #endif // FECHAS_H_INCLUDED

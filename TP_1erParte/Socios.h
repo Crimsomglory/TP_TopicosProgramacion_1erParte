@@ -25,7 +25,7 @@ typedef struct
 
 
 int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, T_Fecha* fechaProceso);
-int validarSocio(T_Socio* socio, T_Fecha* fechaProceso);
+int validarSocio(T_Socio* socio, T_Fecha* fechaProceso, int avisarError);
 void normalizarNyAp(char* nyap);
 void trozarRegistro(T_Socio* socio, char* linea);
 
