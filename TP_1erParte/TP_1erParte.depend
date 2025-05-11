@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1746928379 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\main.c
+	"Socios.h"
+
+1746925365 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\fechas.c
+	"Fechas.h"
+
+1746928374 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\fechas.h
+	<stdio.h>
+	<stdlib.h>
+
+1746928856 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.c
+	"Socios.h"
+
+1746927632 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.h
+	"Fechas.h"
+	<string.h>
+	<ctype.h>
+
