@@ -45,7 +45,6 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
         if(validarSocio(&socio, fechaProceso, 0) == TODO_OK)
         {
             //cargar socio bin correcto
-            puts("Socio correcto");
             normalizarNyAp(socio.apYN);
             fwrite(&socio,sizeof(T_Socio),1,archBin);
         }
@@ -60,6 +59,8 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
     cerrarArchivo(&archTxt);
     cerrarArchivo(&archBin);
     cerrarArchivo(&archError);
+
+    //leerArchivo();
 
     return TODO_OK;
 }
@@ -254,3 +255,23 @@ void cerrarArchivo(FILE** ptr)
         fclose(*ptr);
 }
 
+void leerArchivo()
+{
+    FILE* ptr = fopen("socios.dat","rb");
+
+    if(!ptr)
+        return;
+
+    T_Socio socio;
+
+    fread(&socio,sizeof(T_Socio),1,ptr);
+
+    while(!feof(ptr))
+    {
+        printf("dni:%ld apyn:%-20s fecha nac:%02d/%02d/%d sexo: %c fecha afil: %02d/%02d/%d categoria: %-10s fecha cuota: %02d/%02d/%d estado: %c\n",socio.dni,socio.apYN,socio.fechaNac.d,socio.fechaNac.m,socio.fechaNac.y,socio.sexo,socio.fechaAfil.d,socio.fechaAfil.m,socio.fechaAfil.y,socio.categoria,socio.fechaCuota.d,socio.fechaCuota.m,socio.fechaCuota.y,socio.estado);
+        fread(&socio,sizeof(T_Socio),1,ptr);
+    }
+
+    fclose(ptr);
+
+}
