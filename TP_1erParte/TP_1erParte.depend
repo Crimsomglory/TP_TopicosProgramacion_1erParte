@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1747076385 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\main.c
+1747076611 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\main.c
 	"Socios.h"
 
 1746982996 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\fechas.c
@@ -17,4 +17,10 @@
 	"Fechas.h"
 	<string.h>
 	<ctype.h>
+
+1747150083 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.c
+	"indice.h"
+
+1747150021 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.h
+	"Socios.h"
 
