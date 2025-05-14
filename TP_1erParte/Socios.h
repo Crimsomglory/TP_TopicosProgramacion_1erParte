@@ -11,6 +11,9 @@
 #define TODO_OK 1
 #define SOCIO_INVALIDO -3
 
+#define ERROR_ARCHIVO 7
+#define ARCHIVO_OK 8
+
 typedef struct
 {
     long dni;
@@ -28,5 +31,14 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
 int validarSocio(T_Socio* socio, T_Fecha* fechaProceso, int avisarError);
 void normalizarNyAp(char* nyap);
 void trozarRegistro(T_Socio* socio, char* linea);
+int altaSocio();
+int bajaSocio();
+int modificarSocio();
+int mostrarInfoSocio();
+int mostrarSociosActivos();
+
+int abrirArchivo(FILE** ptr, const char* nomArch, const char* modo);
+void cerrarArchivo(FILE** ptr);
+void leerArchivo();//aux para comprobar datos escritos
 
 #endif // SOCIOS_H_INCLUDED

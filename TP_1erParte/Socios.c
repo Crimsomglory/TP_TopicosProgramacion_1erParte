@@ -1,12 +1,5 @@
 #include "Socios.h"
 
-#define ERROR_ARCHIVO 7
-#define ARCHIVO_OK 8
-
-int abrirArchivo(FILE** ptr, const char* nomArch, const char* modo);
-void cerrarArchivo(FILE** ptr);
-void leerArchivo();//aux para comprobar datos escritos
-
 int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, T_Fecha* fechaProceso)
 {
 

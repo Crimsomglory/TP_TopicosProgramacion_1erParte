@@ -1,4 +1,4 @@
-#include "Socios.h"
+#include "indice.h"
 
 #define NOM_TXT "socios.txt"
 #define NOM_BIN "socios.dat"
@@ -9,6 +9,7 @@ int main()
 {
     T_Fecha fechaProceso;
     int resp;
+    T_indice idx;
 
     if(FECHA_LOCAL)
     {
@@ -20,6 +21,11 @@ int main()
         obtenerFechaSystem(&fechaProceso);
 
     resp = crearArchivoSociosBin(NOM_TXT,NOM_BIN,NOM_ERRORTXT,&fechaProceso);
+
+    indiceCrear(&idx);
+    indiceCargar(&idx,NOM_BIN);
+    //mostrarIndice(&idx);
+    indiceVaciar(&idx);
 
     if(resp != TODO_OK)
         return resp;

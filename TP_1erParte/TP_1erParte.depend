@@ -1,6 +1,6 @@
 # depslib dependency file v1.0
-1747076611 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\main.c
-	"Socios.h"
+1747184111 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\main.c
+	"indice.h"
 
 1746982996 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\fechas.c
 	"Fechas.h"
@@ -10,17 +10,17 @@
 	<stdlib.h>
 	<time.h>
 
-1747076583 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.c
+1747175562 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.c
 	"Socios.h"
 
-1746979832 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.h
+1747184799 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.h
 	"Fechas.h"
 	<string.h>
 	<ctype.h>
 
-1747150083 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.c
+1747185279 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.c
 	"indice.h"
 
-1747150021 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.h
+1747185279 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.h
 	"Socios.h"
 

@@ -7,6 +7,8 @@
 #define VEC_LLENO 9
 #define VEC_VACIO 10
 #define TAM_VEC 100
+#define ENCONTRADO 11
+#define NO_ENCONTRADO 12
 
 typedef struct
 {
@@ -32,5 +34,7 @@ int indiceLleno(const T_indice* vec);
 int indiceBuscar(const T_indice* vec, T_reg_indice* idx);//si existe el dni deja el nro de registro en idx
 int indiceCargar(T_indice*vec, const char* path);
 void indiceVaciar(T_indice* vec);
+
+void mostrarIndice(T_indice* vec);
 
 #endif // INDICE_H_INCLUDED
