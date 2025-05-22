@@ -26,16 +26,11 @@ typedef struct
     char estado;
 }T_Socio;
 
-
 int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, T_Fecha* fechaProceso);
 int validarSocio(T_Socio* socio, T_Fecha* fechaProceso, int avisarError);
 void normalizarNyAp(char* nyap);
 void trozarRegistro(T_Socio* socio, char* linea);
-int altaSocio();
-int bajaSocio();
-int modificarSocio();
-int mostrarInfoSocio();
-int mostrarSociosActivos();
+void ingresarDatos(T_Socio* socio);
 
 int abrirArchivo(FILE** ptr, const char* nomArch, const char* modo);
 void cerrarArchivo(FILE** ptr);

@@ -1,4 +1,4 @@
-#include "indice.h"
+#include "menu.h"
 
 #define NOM_TXT "socios.txt"
 #define NOM_BIN "socios.dat"
@@ -8,8 +8,9 @@
 int main()
 {
     T_Fecha fechaProceso;
-    int resp;
     T_indice idx;
+    int resp;
+    char opcion;
 
     if(FECHA_LOCAL)
     {
@@ -25,10 +26,24 @@ int main()
     indiceCrear(&idx);
     indiceCargar(&idx,NOM_BIN);
     //mostrarIndice(&idx);
-    indiceVaciar(&idx);
 
-    if(resp != TODO_OK)
-        return resp;
+    desplegarMenu();
+    scanf(" %c", &opcion);
+
+    ///O ABRO EL ARCHIVO Y MANDO PUNTERO, O ABRO Y CIERRO POR CADA ACCION DEL MENU
+    while(opcion != 'f' && resp == TODO_OK)
+    {
+        resp = seleccionarOpcion(&idx, opcion,NOM_BIN, &fechaProceso);
+        system("pause");
+        system("cls");
+        desplegarMenu();
+        scanf(" %c", &opcion);
+    }
+
+    if(resp!=TODO_OK)
+        printf("\nRespuesta aplicacion: %d\n",resp);
+
+    indiceVaciar(&idx);
 
     return 0;
 }

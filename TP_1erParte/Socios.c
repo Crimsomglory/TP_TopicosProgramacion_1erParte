@@ -268,3 +268,28 @@ void leerArchivo()
     fclose(ptr);
 
 }
+
+void ingresarDatos(T_Socio* socio)
+{
+    fflush(stdin);
+    printf("Ingrese nombre y apellido: ");
+    fgets(socio->apYN, sizeof(socio->apYN), stdin);
+    socio->apYN[strcspn(socio->apYN, "\n")] = '\0';
+    fflush(stdin);
+    printf("Ingrese fecha de nacimiento: ");
+    scanf("%d/%d/%d",&socio->fechaNac.d,&socio->fechaNac.m,&socio->fechaNac.y);
+
+    printf("Ingrese sexo: ");
+    scanf(" %c",&socio->sexo);
+
+    printf("Ingrese fecha de afiliacion: ");
+    scanf("%d/%d/%d",&socio->fechaAfil.d,&socio->fechaAfil.m,&socio->fechaAfil.y);
+
+    printf("Ingrese categoria: ");
+    scanf("%s",socio->categoria);
+
+    printf("Ingrese fecha de cuota: ");
+    scanf("%d/%d/%d",&socio->fechaCuota.d,&socio->fechaCuota.m,&socio->fechaCuota.y);
+
+    socio->estado = 'A';
+}
