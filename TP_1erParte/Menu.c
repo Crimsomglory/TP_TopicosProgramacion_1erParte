@@ -81,7 +81,7 @@ int altaSocio(T_indice* idx, char* nArch, T_Fecha* fechaP)
     if(validarSocio(&socio,fechaP,1)!=TODO_OK )
         return TODO_OK; //salgo y no cargo el socio
 
-    resp = abrirArchivo(&archivo,nArch,"rb");
+    resp = abrirArchivo(&archivo,nArch,"a+b");
 
     if(resp!=TODO_OK)
         return resp;
