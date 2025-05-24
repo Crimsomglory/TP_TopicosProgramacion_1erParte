@@ -1,6 +1,6 @@
 #include "Socios.h"
 
-int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, T_Fecha* fechaProceso)
+int crear_archivo_socios_bin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, t_fecha* fechaProceso)
 {
 
     FILE* archTxt;
@@ -8,22 +8,22 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
     FILE* archError;
     char registro[TAM_REG];
     char registroOriginal[TAM_REG];
-    T_Socio socio;
+    t_socio socio;
 
     //apertura de archivos
-    if(abrirArchivo(&archTxt,nombrearchTxt,"r") == ERROR_ARCHIVO)
+    if(abrir_archivo(&archTxt,nombrearchTxt,"r") == ERROR_ARCHIVO)
         return ERROR_ARCHIVO;
 
-    if(abrirArchivo(&archBin,nombreArchBin,"wb") == ERROR_ARCHIVO)
+    if(abrir_archivo(&archBin,nombreArchBin,"wb") == ERROR_ARCHIVO)
     {
-        cerrarArchivo(&archTxt);
+        cerrar_archivo(&archTxt);
         return ERROR_ARCHIVO;
     }
 
-    if(abrirArchivo(&archError,nombreArchErrorTxt,"w") == ERROR_ARCHIVO)
+    if(abrir_archivo(&archError,nombreArchErrorTxt,"w") == ERROR_ARCHIVO)
     {
-        cerrarArchivo(&archTxt);
-        cerrarArchivo(&archBin);
+        cerrar_archivo(&archTxt);
+        cerrar_archivo(&archBin);
         return ERROR_ARCHIVO;
     }
 
@@ -32,14 +32,14 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
     {
         //printf("Registro txt a validar: %s",registro);
         strcpy(registroOriginal, registro);
-        trozarRegistro(&socio,registro);
+        trozar_registro(&socio,registro);
 
         //validar socio
-        if(validarSocio(&socio, fechaProceso, 0) == TODO_OK)
+        if(validar_socio(&socio, fechaProceso, 0) == TODO_OK)
         {
             //cargar socio bin correcto
             normalizarNyAp(socio.apYN);
-            fwrite(&socio,sizeof(T_Socio),1,archBin);
+            fwrite(&socio,sizeof(t_socio),1,archBin);
         }
         else
         {
@@ -49,16 +49,16 @@ int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, 
     }
 
     //cierre de archivos
-    cerrarArchivo(&archTxt);
-    cerrarArchivo(&archBin);
-    cerrarArchivo(&archError);
+    cerrar_archivo(&archTxt);
+    cerrar_archivo(&archBin);
+    cerrar_archivo(&archError);
 
-    //leerArchivo();
+    //leer_archivo();
 
     return TODO_OK;
 }
 
-int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
+int validar_socio(t_socio* socio, t_fecha* fechaProceso,int avisarError)
 {
     int resp;
 
@@ -69,7 +69,7 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
         return SOCIO_INVALIDO;
     }
 
-    if( validarFecha(&socio->fechaNac)!=ES_FECHA) //validar fecha nac Validación formal y < fecha de proceso – 10 años
+    if( validar_fecha(&socio->fechaNac)!=ES_FECHA) //validar fecha nac Validación formal y < fecha de proceso – 10 años
     {
         if(avisarError)
             puts("fecha nac no es fecha");
@@ -77,7 +77,7 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
     }
 
     fechaProceso->y-=10;
-    resp = compararFechas(&socio->fechaNac, fechaProceso);
+    resp = comparar_fechas(&socio->fechaNac, fechaProceso);
     fechaProceso->y+=10;
 
     if(resp != FECHA_2_MAYOR)
@@ -94,7 +94,7 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
         return SOCIO_INVALIDO;
     }
 
-    resp = compararFechas(&socio->fechaAfil, &socio->fechaNac); //validar fecha afiliacion Validación formal, <= fecha de proceso y > fecha nacimiento
+    resp = comparar_fechas(&socio->fechaAfil, &socio->fechaNac); //validar fecha afiliacion Validación formal, <= fecha de proceso y > fecha nacimiento
     if(resp != FECHA_1_MAYOR)
     {
         if(avisarError)
@@ -102,7 +102,7 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
         return SOCIO_INVALIDO;
     }
 
-    resp = compararFechas(&socio->fechaAfil,fechaProceso);
+    resp = comparar_fechas(&socio->fechaAfil,fechaProceso);
     if(resp==FECHA_1_MAYOR)
     {
         if(avisarError)
@@ -118,7 +118,7 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
         return SOCIO_INVALIDO;
     }
 
-    resp = compararFechas(&socio->fechaCuota,&socio->fechaAfil); //validar fecha cuota > fecha de afiliación y <= fecha de proceso
+    resp = comparar_fechas(&socio->fechaCuota,&socio->fechaAfil); //validar fecha cuota > fecha de afiliación y <= fecha de proceso
     if(resp != FECHA_1_MAYOR)
     {
         if(avisarError)
@@ -126,7 +126,7 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
         return SOCIO_INVALIDO;
     }
 
-    resp = compararFechas(&socio->fechaCuota,fechaProceso);
+    resp = comparar_fechas(&socio->fechaCuota,fechaProceso);
     if(resp == FECHA_1_MAYOR)
     {
         if(avisarError)
@@ -146,7 +146,7 @@ int validarSocio(T_Socio* socio, T_Fecha* fechaProceso,int avisarError)
 
 }
 
-void trozarRegistro(T_Socio *socio, char* linea)
+void trozar_registro(t_socio *socio, char* linea)
 {
     char* pos = strchr(linea,'\n');
     *pos = '\0';
@@ -230,7 +230,7 @@ void normalizarNyAp(char* nyap)
     strcpy(nyap,palAux);
 }
 
-int abrirArchivo(FILE** ptr, const char* nomArch, const char* modo)
+int abrir_archivo(FILE** ptr, const char* nomArch, const char* modo)
 {
     *ptr = fopen(nomArch,modo);
 
@@ -238,38 +238,38 @@ int abrirArchivo(FILE** ptr, const char* nomArch, const char* modo)
         return TODO_OK;
 
     printf("Error al abrir el archivo %s en modo %s\n",nomArch,modo);
-    *ptr = NULL;
+
     return ERROR_ARCHIVO;
 }
 
-void cerrarArchivo(FILE** ptr)
+void cerrar_archivo(FILE** ptr)
 {
     if(*ptr)
         fclose(*ptr);
 }
 
-void leerArchivo()
+void leer_archivo()
 {
     FILE* ptr = fopen("socios.dat","rb");
 
     if(!ptr)
         return;
 
-    T_Socio socio;
+    t_socio socio;
 
-    fread(&socio,sizeof(T_Socio),1,ptr);
+    fread(&socio,sizeof(t_socio),1,ptr);
 
     while(!feof(ptr))
     {
         printf("dni:%ld apyn:%-20s fecha nac:%02d/%02d/%d sexo: %c fecha afil: %02d/%02d/%d categoria: %-10s fecha cuota: %02d/%02d/%d estado: %c\n",socio.dni,socio.apYN,socio.fechaNac.d,socio.fechaNac.m,socio.fechaNac.y,socio.sexo,socio.fechaAfil.d,socio.fechaAfil.m,socio.fechaAfil.y,socio.categoria,socio.fechaCuota.d,socio.fechaCuota.m,socio.fechaCuota.y,socio.estado);
-        fread(&socio,sizeof(T_Socio),1,ptr);
+        fread(&socio,sizeof(t_socio),1,ptr);
     }
 
     fclose(ptr);
 
 }
 
-void ingresarDatos(T_Socio* socio)
+void ingresar_datos(t_socio* socio)
 {
     fflush(stdin);
     printf("Ingrese nombre y apellido: ");

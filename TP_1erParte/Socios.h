@@ -18,22 +18,22 @@ typedef struct
 {
     long dni;
     char apYN[TAM_NYAP];
-    T_Fecha fechaNac;
+    t_fecha fechaNac;
     char sexo;
-    T_Fecha fechaAfil;
+    t_fecha fechaAfil;
     char categoria[11];
-    T_Fecha fechaCuota;
+    t_fecha fechaCuota;
     char estado;
-}T_Socio;
+}t_socio;
 
-int crearArchivoSociosBin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, T_Fecha* fechaProceso);
-int validarSocio(T_Socio* socio, T_Fecha* fechaProceso, int avisarError);
+int crear_archivo_socios_bin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, t_fecha* fechaProceso);
+int validar_socio(t_socio* socio, t_fecha* fechaProceso, int avisarError);
 void normalizarNyAp(char* nyap);
-void trozarRegistro(T_Socio* socio, char* linea);
-void ingresarDatos(T_Socio* socio);
+void trozar_registro(t_socio* socio, char* linea);
+void ingresar_datos(t_socio* socio);
 
-int abrirArchivo(FILE** ptr, const char* nomArch, const char* modo);
-void cerrarArchivo(FILE** ptr);
-void leerArchivo();//aux para comprobar datos escritos
+int abrir_archivo(FILE** ptr, const char* nomArch, const char* modo);
+void cerrar_archivo(FILE** ptr);
+void leer_archivo();//aux para comprobar datos escritos
 
 #endif // SOCIOS_H_INCLUDED

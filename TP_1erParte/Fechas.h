@@ -18,11 +18,11 @@ typedef struct
     int m;
     int y;
 
-}T_Fecha;
+}t_fecha;
 
-int ingresarFechaProceso(T_Fecha* fecha);
-int validarFecha(T_Fecha* fecha);
-int compararFechas(T_Fecha* f1, T_Fecha* f2);
-void obtenerFechaSystem(T_Fecha* fecha);
+int ingresar_fecha_proceso(t_fecha* fecha);
+int validar_fecha(t_fecha* fecha);
+int comparar_fechas(t_fecha* f1, t_fecha* f2);
+void obtener_fecha_system(t_fecha* fecha);
 
 #endif // FECHAS_H_INCLUDED

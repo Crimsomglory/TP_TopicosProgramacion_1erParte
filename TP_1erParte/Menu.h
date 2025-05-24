@@ -3,13 +3,13 @@
 
 #include "indice.h"
 
-void desplegarMenu();
-int seleccionarOpcion(T_indice* idx, char opcion,  char* nArch, T_Fecha* fechaP);
+void desplegar_menu();
+int seleccionar_opcion(t_indice* idx, char opcion,  char* nArch, t_fecha* fechaP);
 
-int altaSocio(T_indice* idx,  char* nArch, T_Fecha* fechaP); //alta si no existe
-int bajaSocio(T_indice* idx,  char* nArch); //baja si existe
-int modificarSocio(T_indice* idx,  char* nArch); //modificar si existe
-int mostrarInfoSocio(T_indice* idx,  char* nArch); //mostrar info si existe
-int mostrarSociosActivos(T_indice* idx,  char* nArch); //mostrar socios ordenados
+int alta_socio(t_indice* idx,  char* nArch, t_fecha* fechaP); //alta si no existe
+int baja_socio(t_indice* idx,  char* nArch); //baja si existe
+int modificar_socio(t_indice* idx,  char* nArch); //modificar si existe
+int mostrar_info_socio(t_indice* idx,  char* nArch); //mostrar info si existe
+int mostrar_socios_activos(t_indice* idx,  char* nArch); //mostrar socios ordenados
 
 #endif // MENU_H_INCLUDED

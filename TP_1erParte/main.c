@@ -7,43 +7,43 @@
 
 int main()
 {
-    T_Fecha fechaProceso;
-    T_indice idx;
+    t_fecha fechaProceso;
+    t_indice idx;
     int resp;
     char opcion;
 
     if(FECHA_LOCAL)
     {
-        resp = ingresarFechaProceso(&fechaProceso);
+        resp = ingresar_fecha_proceso(&fechaProceso);
         if(resp != FECHA_VALIDA)
             return resp;
     }
     else
-        obtenerFechaSystem(&fechaProceso);
+        obtener_fecha_system(&fechaProceso);
 
-    resp = crearArchivoSociosBin(NOM_TXT,NOM_BIN,NOM_ERRORTXT,&fechaProceso);
+    resp = crear_archivo_socios_bin(NOM_TXT,NOM_BIN,NOM_ERRORTXT,&fechaProceso);
 
-    indiceCrear(&idx);
-    indiceCargar(&idx,NOM_BIN);
-    //mostrarIndice(&idx);
+    indice_crear(&idx);
+    indice_cargar(&idx,NOM_BIN);
+    //mostrar_indice(&idx);
 
-    desplegarMenu();
+    desplegar_menu();
     scanf(" %c", &opcion);
+    fflush(stdin);
 
     ///O ABRO EL ARCHIVO Y MANDO PUNTERO, O ABRO Y CIERRO POR CADA ACCION DEL MENU
     while(opcion != 'f' && resp == TODO_OK)
     {
-        resp = seleccionarOpcion(&idx, opcion,NOM_BIN, &fechaProceso);
-        system("pause");
-        system("cls");
-        desplegarMenu();
+        resp = seleccionar_opcion(&idx, opcion,NOM_BIN, &fechaProceso);
+        desplegar_menu();
         scanf(" %c", &opcion);
+        fflush(stdin);
     }
 
     if(resp!=TODO_OK)
         printf("\nRespuesta aplicacion: %d\n",resp);
 
-    indiceVaciar(&idx);
+    indice_vaciar(&idx);
 
     return 0;
 }

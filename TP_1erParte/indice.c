@@ -1,10 +1,10 @@
 #include "indice.h"
 
-int compararRegs(const void* e1, const void* e2);
+int comparar_regs(const void* e1, const void* e2);
 
-void indiceCrear(T_indice* vec)
+void indice_crear(t_indice* vec)
 {
-    void* ptr = malloc(TAM_VEC* sizeof(T_reg_indice));
+    void* ptr = malloc(TAM_VEC* sizeof(t_reg_indice));
 
     if(!ptr)
     {
@@ -15,59 +15,73 @@ void indiceCrear(T_indice* vec)
     vec->vec = ptr;
     vec->cap = TAM_VEC;
     vec->ce = 0;
-    vec->tamElem = sizeof(T_reg_indice);
+    vec->tamElem = sizeof(t_reg_indice);
 }
 
-void indiceVaciar(T_indice* vec)
+void indice_vaciar(t_indice* vec)
 {
     if(!vec->vec)
+    {
         free(vec->vec);
+        vec->vec = NULL;
+    }
 }
 
-int indiceCargar(T_indice*vec, const char* path)
+int indice_cargar(t_indice*vec, const char* path)
 {
     FILE* ptrArch;
     int resp;
-    T_Socio socio;
-    T_reg_indice idx;
+    t_socio socio;
+    t_reg_indice idx;
     int i=0; //posición de registros
 
-    resp = abrirArchivo(&ptrArch,path,"rb");
+    resp = abrir_archivo(&ptrArch,path,"rb");
 
     if(resp  == ERROR_ARCHIVO)
         return resp;
 
-    fread(&socio,sizeof(T_Socio),1,ptrArch);
+    fread(&socio,sizeof(t_socio),1,ptrArch);
 
     while(!feof(ptrArch))
     {
         idx.dni = socio.dni;
         idx.nroReg = i;
-        resp = indiceInsertar(vec,&idx);
+        resp = indice_insertar(vec,&idx);
 
         if(resp!=TODO_OK)
         {
-            cerrarArchivo(&ptrArch);
+            cerrar_archivo(&ptrArch);
             return resp; //sin espacio
         }
 
-        fread(&socio,sizeof(T_Socio),1,ptrArch);
+        fread(&socio,sizeof(t_socio),1,ptrArch);
         i++;
     }
 
-    cerrarArchivo(&ptrArch);
+    cerrar_archivo(&ptrArch);
     return TODO_OK;
 }
 
-int indiceInsertar(T_indice* vec, const T_reg_indice* idx)
+int indice_insertar(t_indice* vec, const t_reg_indice* idx)
 {
     void* ult = vec->vec + vec->ce * vec->tamElem;
     void* pos = vec->vec;
+    void* aux;
+    unsigned nuevaCapacidad;
 
     if(vec->ce == vec->cap)
-        return VEC_LLENO;
+    {
+        nuevaCapacidad = (size_t)ceil((float)(vec->cap * (1+PORCENTAJE_CRECIMIENTO/100)));
+        aux = realloc(vec->vec, nuevaCapacidad * vec->tamElem);
 
-    while(pos<ult && compararRegs(pos,idx) < 0)
+        if(!aux)
+            return SIN_MEM;
+
+        vec->vec = aux;
+        vec->cap = nuevaCapacidad;
+    }
+
+    while(pos<ult && comparar_regs(pos,idx) < 0)
         pos+=vec->tamElem;
 
     for(void* i = ult; i > pos ; i-=vec->tamElem)
@@ -79,27 +93,46 @@ int indiceInsertar(T_indice* vec, const T_reg_indice* idx)
     return TODO_OK;
 }
 
-int compararRegs(const void* e1, const void* e2)
+int indice_eliminar(t_indice* vec, t_reg_indice* idx)
 {
-    T_reg_indice* reg1 = (T_reg_indice*)e1;
-    T_reg_indice* reg2 = (T_reg_indice*)e2;
+    char* ult = vec->vec + vec->ce * vec->tamElem;
+    char* pos = vec->vec;
+    int res;
+
+    while(pos<ult && (res = comparar_regs(pos,idx)) < 0)
+        pos+=vec->tamElem;
+
+    if(res != 0)
+        return NO_ENCONTRADO;
+
+    memmove(pos, pos + vec->tamElem, ult - (pos + vec->tamElem));
+
+    vec->ce--;
+
+    return TODO_OK;
+}
+
+int comparar_regs(const void* e1, const void* e2)
+{
+    t_reg_indice* reg1 = (t_reg_indice*)e1;
+    t_reg_indice* reg2 = (t_reg_indice*)e2;
 
     return reg1->dni - reg2->dni;
 }
 
-void mostrarIndice(T_indice* vec)
+void mostrar_indice(t_indice* vec)
 {
     void* ult = vec->vec + vec->ce * vec->tamElem;
-    T_reg_indice* reg;
+    t_reg_indice* reg;
 
     for(void* i = vec->vec;i<ult;i+=vec->tamElem)
     {
-        reg = (T_reg_indice*)i;
+        reg = (t_reg_indice*)i;
         printf("dni:%10ld nro reg: %d\n",reg->dni,reg->nroReg);
     }
 }
 
-int indiceVacio(const T_indice* vec)
+int indice_vacio(const t_indice* vec)
 {
     if(vec->ce == 0)
         return VEC_VACIO;
@@ -107,7 +140,7 @@ int indiceVacio(const T_indice* vec)
     return TODO_OK;
 }
 
-int indiceLleno(const T_indice* vec)
+int indice_lleno(const t_indice* vec)
 {
     if(vec->ce == vec->cap)
         return VEC_LLENO;
@@ -115,13 +148,13 @@ int indiceLleno(const T_indice* vec)
     return TODO_OK;
 }
 
-int indiceBuscar(const T_indice* vec, T_reg_indice* idx)
+int indice_buscar(const t_indice* vec, t_reg_indice* idx)
 {
     void* ult = vec->vec + vec->ce * vec->tamElem;
 
     for(void* i = vec->vec;i<ult;i+=vec->tamElem)
     {
-        if(compararRegs(i,idx)==0)
+        if(comparar_regs(i,idx)==0)
         {
             memcpy(idx,i,vec->tamElem);
             return ENCONTRADO;

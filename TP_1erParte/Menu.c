@@ -1,6 +1,6 @@
 #include "Menu.h"
 
-void desplegarMenu()
+void desplegar_menu()
 {
     puts("");
     puts("Seleccione una opcion");
@@ -13,30 +13,30 @@ void desplegarMenu()
     puts("");
 }
 
-int seleccionarOpcion(T_indice* idx, char opcion,  char* nArch, T_Fecha* fechaP)
+int seleccionar_opcion(t_indice* idx, char opcion,  char* nArch, t_fecha* fechaP)
 {
     int resp;
 
     switch(opcion)
     {
         case 'a':
-            resp = altaSocio(idx, nArch, fechaP);
+            resp = alta_socio(idx, nArch, fechaP);
             break;
 
         case 'b':
-            resp = bajaSocio(idx, nArch);
+            resp = baja_socio(idx, nArch);
             break;
 
         case 'c':
-            resp = modificarSocio(idx, nArch);
+            resp = modificar_socio(idx, nArch);
             break;
 
         case 'd':
-            resp = mostrarInfoSocio(idx, nArch);
+            resp = mostrar_info_socio(idx, nArch);
             break;
 
         case 'e':
-            resp = mostrarSociosActivos(idx, nArch);
+            resp = mostrar_socios_activos(idx, nArch);
             break;
 
         case 'f':
@@ -51,23 +51,17 @@ int seleccionarOpcion(T_indice* idx, char opcion,  char* nArch, T_Fecha* fechaP)
     return resp;
 }
 
-int altaSocio(T_indice* idx, char* nArch, T_Fecha* fechaP)
+int alta_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
 {
-    T_Socio socio;
-    T_reg_indice reg;
+    t_socio socio;
+    t_reg_indice reg;
     FILE* archivo;
     int resp;
-
-    if(indiceLleno(idx) == VEC_LLENO)
-    {
-        puts("Registro lleno");
-        return TODO_OK;
-    }
 
     puts("Ingrese el DNI alta");
     scanf("%ld",&reg.dni);
 
-    resp = indiceBuscar(idx,&reg);
+    resp = indice_buscar(idx,&reg);
 
     if(resp == ENCONTRADO)
     {
@@ -76,48 +70,132 @@ int altaSocio(T_indice* idx, char* nArch, T_Fecha* fechaP)
     }
 
     reg.dni = socio.dni;
-    ingresarDatos(&socio);
+    ingresar_datos(&socio);
 
-    if(validarSocio(&socio,fechaP,1)!=TODO_OK )
+    if(validar_socio(&socio,fechaP,1)!=TODO_OK )
         return TODO_OK; //salgo y no cargo el socio
 
-    resp = abrirArchivo(&archivo,nArch,"a+b");
+    resp = abrir_archivo(&archivo,nArch,"a+b");
 
     if(resp!=TODO_OK)
         return resp;
 
-    if(indiceInsertar(idx,&reg) != TODO_OK)
+    if((resp = indice_insertar(idx,&reg)) != TODO_OK)
     {
-        cerrarArchivo(&archivo);
-        return TODO_OK; //salgo y no cargo el socio
+        cerrar_archivo(&archivo);
+        return resp; //salgo y no cargo el socio
     }
 
     fseek(archivo,0,SEEK_END);
-    fwrite(&socio,sizeof(T_Socio),1,archivo);
+    fwrite(&socio,sizeof(t_socio),1,archivo);
 
-    cerrarArchivo(&archivo);
+    cerrar_archivo(&archivo);
     puts("Alta correcta");
     return TODO_OK;
 }
 
-int bajaSocio(T_indice* idx, char* nArch)
+int baja_socio(t_indice* idx, char* nArch)
 {
+    FILE* archivo;
+    int resp;
+    t_reg_indice reg;
+    t_socio socio;
+
+    resp = abrir_archivo(&archivo,nArch,"r+b");
+
+    if(!resp)
+        return resp;
+
+    puts("Ingrese el DNI del socio que quiere dar de baja:");
+    scanf("%ld", &reg.dni);
+    fflush(stdin);
+
+    resp = indice_buscar(idx, &reg);
+
+    if(resp!=ENCONTRADO)
+    {
+        puts("Socio no encontrado");
+        return resp;
+    }
+
+    fseek(archivo, reg.nroReg * sizeof(t_socio), SEEK_SET);
+    fread(&socio, sizeof(t_socio), 1, archivo);
+    socio.estado = 'B';
+    fseek(archivo, -1 * (long)sizeof(t_socio), SEEK_CUR);
+    fwrite(&socio, sizeof(t_socio), 1, archivo);
+
+    indice_eliminar(idx, &reg);
+
+    cerrar_archivo(&archivo);
+
     puts("Baja correcta");
     return TODO_OK;
 }
 
-int modificarSocio(T_indice* idx, char* nArch)
+int modificar_socio(t_indice* idx, char* nArch)
 {
     puts("Modificacion correcta");
     return TODO_OK;
 }
 
-int mostrarInfoSocio(T_indice* idx, char* nArch)
+int mostrar_info_socio(t_indice* idx, char* nArch)
 {
+    FILE* archivo;
+    int resp;
+    t_reg_indice reg;
+    t_socio socio;
+
+    resp = abrir_archivo(&archivo,nArch,"rb");
+
+    if(!resp)
+        return resp;
+
+    puts("Ingrese el DNI del socio que quiere mostrar:");
+    scanf("%ld", &reg.dni);
+    fflush(stdin);
+
+    resp = indice_buscar(idx, &reg);
+
+    if(resp!=ENCONTRADO)
+    {
+        puts("Socio no encontrado");
+        return resp;
+    }
+
+    fseek(archivo, reg.nroReg * sizeof(t_socio), SEEK_SET);
+    fread(&socio, sizeof(t_socio), 1, archivo);
+
+    printf("dni:%ld apyn:%-20s fecha nac:%02d/%02d/%d sexo: %c fecha afil: %02d/%02d/%d categoria: %-10s fecha cuota: %02d/%02d/%d estado: %c\n",socio.dni,socio.apYN,socio.fechaNac.d,socio.fechaNac.m,socio.fechaNac.y,socio.sexo,socio.fechaAfil.d,socio.fechaAfil.m,socio.fechaAfil.y,socio.categoria,socio.fechaCuota.d,socio.fechaCuota.m,socio.fechaCuota.y,socio.estado);
+
+    cerrar_archivo(&archivo);
+
     return TODO_OK;
 }
 
-int mostrarSociosActivos(T_indice* idx, char* nArch)
+int mostrar_socios_activos(t_indice* idx, char* nArch)
 {
+    FILE* archivo;
+    int resp;
+    t_socio socio;
+    char* posIdx;
+
+    resp = abrir_archivo(&archivo,nArch,"rb");
+
+    if(!resp)
+        return resp;
+
+    puts("Listado de socios activos ordenados por DNI:");
+
+    for(posIdx = idx->vec; posIdx < (char*)idx->vec + (idx->ce - 1) * idx->tamElem; posIdx += idx->tamElem)
+    {
+        fseek(archivo, ((t_reg_indice*)posIdx)->nroReg * sizeof(t_socio), SEEK_SET);
+        fread(&socio, sizeof(t_socio), 1, archivo);
+
+        if(socio.estado == 'A')
+            printf("dni:%ld apyn:%-20s fecha nac:%02d/%02d/%d sexo: %c fecha afil: %02d/%02d/%d categoria: %-10s fecha cuota: %02d/%02d/%d estado: %c\n",socio.dni,socio.apYN,socio.fechaNac.d,socio.fechaNac.m,socio.fechaNac.y,socio.sexo,socio.fechaAfil.d,socio.fechaAfil.m,socio.fechaAfil.y,socio.categoria,socio.fechaCuota.d,socio.fechaCuota.m,socio.fechaCuota.y,socio.estado);
+    }
+
+    cerrar_archivo(&archivo);
+
     return TODO_OK;
 }
