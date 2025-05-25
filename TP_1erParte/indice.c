@@ -20,11 +20,13 @@ void indice_crear(t_indice* vec)
 
 void indice_vaciar(t_indice* vec)
 {
-    if(!vec->vec)
+    if(vec->vec)
     {
         free(vec->vec);
         vec->vec = NULL;
     }
+    vec->ce = 0;
+    vec->cap = 0;
 }
 
 int indice_cargar(t_indice*vec, const char* path)
@@ -58,20 +60,22 @@ int indice_cargar(t_indice*vec, const char* path)
         i++;
     }
 
-    cerrar_archivo(&ptrArch);
+    fclose(ptrArch);
     return TODO_OK;
 }
 
 int indice_insertar(t_indice* vec, const t_reg_indice* idx)
 {
-    void* ult = vec->vec + vec->ce * vec->tamElem;
-    void* pos = vec->vec;
+    void* ult;
+    void* pos;
     void* aux;
     unsigned nuevaCapacidad;
 
     if(vec->ce == vec->cap)
     {
-        nuevaCapacidad = (size_t)ceil((float)(vec->cap * (1+PORCENTAJE_CRECIMIENTO/100)));
+        nuevaCapacidad = (size_t)ceil((float)(vec->cap * (PORCENTAJE_CRECIMIENTO)));
+        //printf("redimension de %d a %u\n",vec->cap,nuevaCapacidad);
+
         aux = realloc(vec->vec, nuevaCapacidad * vec->tamElem);
 
         if(!aux)
@@ -80,6 +84,9 @@ int indice_insertar(t_indice* vec, const t_reg_indice* idx)
         vec->vec = aux;
         vec->cap = nuevaCapacidad;
     }
+
+    ult = vec->vec + vec->ce * vec->tamElem;
+    pos = vec->vec;
 
     while(pos<ult && comparar_regs(pos,idx) < 0)
         pos+=vec->tamElem;
