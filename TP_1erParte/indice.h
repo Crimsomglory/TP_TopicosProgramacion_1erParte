@@ -10,7 +10,7 @@
 #define TAM_VEC 1
 #define ENCONTRADO 11
 #define NO_ENCONTRADO 12
-#define PORCENTAJE_CRECIMIENTO 30
+#define PORCENTAJE_CRECIMIENTO 1.3
 
 typedef struct
 {
