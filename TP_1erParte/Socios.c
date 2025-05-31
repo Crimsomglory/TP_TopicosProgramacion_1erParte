@@ -2,7 +2,6 @@
 
 int crear_archivo_socios_bin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, t_fecha* fechaProceso)
 {
-
     FILE* archTxt;
     FILE* archBin;
     FILE* archError;
@@ -135,12 +134,14 @@ int validar_socio(t_socio* socio, t_fecha* fechaProceso,int avisarError)
     }
 
     //validar estado, A o B
-    if(socio->estado != 'A' && socio->estado != 'B')
+    if(socio->estado != 'A')
     {
         if(avisarError)
             puts("estado invalido");
         return SOCIO_INVALIDO;
     }
+
+    //printf("dni:%ld apyn:%-20s fecha nac:%02d/%02d/%d sexo: %c fecha afil: %02d/%02d/%d categoria: %-10s fecha cuota: %02d/%02d/%d estado: %c\n",socio->dni,socio->apYN,socio->fechaNac.d,socio->fechaNac.m,socio->fechaNac.y,socio->sexo,socio->fechaAfil.d,socio->fechaAfil.m,socio->fechaAfil.y,socio->categoria,socio->fechaCuota.d,socio->fechaCuota.m,socio->fechaCuota.y,socio->estado);
 
     return TODO_OK;
 
@@ -271,7 +272,9 @@ void leer_archivo()
 
 void ingresar_datos(t_socio* socio)
 {
-    fflush(stdin);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
     printf("Ingrese nombre y apellido: ");
     fgets(socio->apYN, sizeof(socio->apYN), stdin);
     socio->apYN[strcspn(socio->apYN, "\n")] = '\0';

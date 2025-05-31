@@ -13,6 +13,20 @@ void desplegar_menu()
     puts("");
 }
 
+void desplegar_menu_mod()
+{
+    puts("");
+    puts("Seleccione una opcion a modificar");
+    puts("a. Nombre y Apellido");
+    puts("b. Fecha de nacimiento");
+    puts("c. Sexo");
+    puts("d. Fecha de afiliacion");
+    puts("e. Categoria");
+    puts("f. Fecha de cuota");
+    puts("g. Salir");
+    puts("");
+}
+
 int seleccionar_opcion(t_indice* idx, char opcion,  char* nArch, t_fecha* fechaP)
 {
     int resp;
@@ -28,7 +42,7 @@ int seleccionar_opcion(t_indice* idx, char opcion,  char* nArch, t_fecha* fechaP
             break;
 
         case 'c':
-            resp = modificar_socio(idx, nArch);
+            resp = modificar_socio(idx, nArch, fechaP);
             break;
 
         case 'd':
@@ -44,7 +58,8 @@ int seleccionar_opcion(t_indice* idx, char opcion,  char* nArch, t_fecha* fechaP
             break;
 
         default:
-            resp = puts("Opcion invalida");
+            puts("Opcion invalida");
+            resp = TODO_OK;
             break;
     }
 
@@ -69,16 +84,24 @@ int alta_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
         return TODO_OK;
     }
 
-    reg.dni = socio.dni;
+    socio.dni = reg.dni;
+
     ingresar_datos(&socio);
+
+    puts("");
 
     if(validar_socio(&socio,fechaP,1)!=TODO_OK )
         return TODO_OK; //salgo y no cargo el socio
+
+    normalizarNyAp(socio.apYN);
 
     resp = abrir_archivo(&archivo,nArch,"a+b");
 
     if(resp!=TODO_OK)
         return resp;
+
+    fseek(archivo,0,SEEK_END);
+    reg.nroReg = (unsigned)ftell(archivo)/sizeof(t_socio);
 
     if((resp = indice_insertar(idx,&reg)) != TODO_OK)
     {
@@ -86,10 +109,9 @@ int alta_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
         return resp; //salgo y no cargo el socio
     }
 
-    fseek(archivo,0,SEEK_END);
     fwrite(&socio,sizeof(t_socio),1,archivo);
-
     cerrar_archivo(&archivo);
+
     puts("Alta correcta");
     return TODO_OK;
 }
@@ -108,14 +130,13 @@ int baja_socio(t_indice* idx, char* nArch)
 
     puts("Ingrese el DNI del socio que quiere dar de baja:");
     scanf("%ld", &reg.dni);
-    fflush(stdin);
 
     resp = indice_buscar(idx, &reg);
 
     if(resp!=ENCONTRADO)
     {
         puts("Socio no encontrado");
-        return resp;
+        return TODO_OK;
     }
 
     fseek(archivo, reg.nroReg * sizeof(t_socio), SEEK_SET);
@@ -132,8 +153,103 @@ int baja_socio(t_indice* idx, char* nArch)
     return TODO_OK;
 }
 
-int modificar_socio(t_indice* idx, char* nArch)
+int modificar_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
 {
+    t_socio socio;
+    t_reg_indice reg;
+    FILE* archivo;
+    int resp;
+    char opcion;
+
+    resp = abrir_archivo(&archivo,nArch,"r+b");
+
+    if(resp!=TODO_OK)
+        return resp;
+
+    puts("Ingrese el DNI para la modificacion");
+    scanf("%ld",&reg.dni);
+
+    resp = indice_buscar(idx,&reg);
+
+    if(resp != ENCONTRADO)
+    {
+        puts("DNI no econtrado");
+        return TODO_OK;
+    }
+
+    fseek(archivo,sizeof(t_socio)*reg.nroReg,SEEK_CUR);
+    fread(&socio,sizeof(t_socio),1,archivo);
+    desplegar_menu_mod();
+    scanf(" %c", &opcion);
+    opcion = tolower(opcion);
+
+    while(opcion != 'g')
+    {
+        switch(opcion)
+        {
+        case 'a':
+            printf("Ingrese nombre y apellido: ");
+            //Lee todo el buffer y elimina el \n para que no lo tome en la proxima lectura
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+            fgets(socio.apYN, sizeof(socio.apYN), stdin);
+            socio.apYN[strcspn(socio.apYN, "\n")] = '\0';
+            normalizarNyAp(socio.apYN);
+            break;
+
+        case 'b':
+            printf("Ingrese fecha de nacimiento: ");
+            scanf("%d/%d/%d",&socio.fechaNac.d,&socio.fechaNac.m,&socio.fechaNac.y);
+            printf("%d/%d/%d",socio.fechaNac.d,socio.fechaNac.m,socio.fechaNac.y);
+            break;
+
+        case 'c':
+            printf("Ingrese sexo: ");
+            scanf(" %c",&socio.sexo);
+            break;
+
+        case 'd':
+            printf("Ingrese fecha de afiliacion: ");
+            scanf("%d/%d/%d",&socio.fechaAfil.d,&socio.fechaAfil.m,&socio.fechaAfil.y);
+            break;
+
+        case 'e':
+            printf("Ingrese categoria: ");
+            scanf("%s",socio.categoria);
+            break;
+
+        case 'f':
+            printf("Ingrese fecha de cuota: ");
+            scanf("%d/%d/%d",&socio.fechaCuota.d,&socio.fechaCuota.m,&socio.fechaCuota.y);
+            break;
+
+        case 'g':
+            break;
+        default:
+            puts("Opcion invalida");
+            break;
+        }
+
+        if(opcion != 'g')
+        {
+            resp = validar_socio(&socio,fechaP,1);
+            if(resp!=TODO_OK)
+            {
+                fclose(archivo);
+                return TODO_OK;
+            }
+
+        }
+
+        desplegar_menu_mod();
+        scanf(" %c", &opcion);
+        opcion = tolower(opcion);
+    }
+
+    fseek(archivo,-(long)sizeof(t_socio),SEEK_CUR);
+    fwrite(&socio,sizeof(t_socio),1,archivo);
+    fclose(archivo);
+
     puts("Modificacion correcta");
     return TODO_OK;
 }
@@ -159,13 +275,15 @@ int mostrar_info_socio(t_indice* idx, char* nArch)
     if(resp!=ENCONTRADO)
     {
         puts("Socio no encontrado");
-        return resp;
+        return TODO_OK;
     }
 
     fseek(archivo, reg.nroReg * sizeof(t_socio), SEEK_SET);
     fread(&socio, sizeof(t_socio), 1, archivo);
 
-    printf("dni:%ld apyn:%-20s fecha nac:%02d/%02d/%d sexo: %c fecha afil: %02d/%02d/%d categoria: %-10s fecha cuota: %02d/%02d/%d estado: %c\n",socio.dni,socio.apYN,socio.fechaNac.d,socio.fechaNac.m,socio.fechaNac.y,socio.sexo,socio.fechaAfil.d,socio.fechaAfil.m,socio.fechaAfil.y,socio.categoria,socio.fechaCuota.d,socio.fechaCuota.m,socio.fechaCuota.y,socio.estado);
+    puts("");
+    puts("");
+    printf("dni:%ld \napyn:%-20s \nfecha nac:%02d/%02d/%d \nsexo: %c \nfecha afil: %02d/%02d/%d \ncategoria: %-10s \nfecha cuota: %02d/%02d/%d \nestado: %c\n",socio.dni,socio.apYN,socio.fechaNac.d,socio.fechaNac.m,socio.fechaNac.y,socio.sexo,socio.fechaAfil.d,socio.fechaAfil.m,socio.fechaAfil.y,socio.categoria,socio.fechaCuota.d,socio.fechaCuota.m,socio.fechaCuota.y,socio.estado);
 
     cerrar_archivo(&archivo);
 

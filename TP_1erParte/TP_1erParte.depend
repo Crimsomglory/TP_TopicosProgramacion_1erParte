@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1748135089 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\main.c
+1748729084 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\main.c
 	"menu.h"
 
 1748132350 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\fechas.c
@@ -10,7 +10,7 @@
 	<stdlib.h>
 	<time.h>
 
-1748132350 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.c
+1748726312 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.c
 	"Socios.h"
 
 1748132350 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\socios.h
@@ -18,17 +18,17 @@
 	<string.h>
 	<ctype.h>
 
-1748135431 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.c
+1748726312 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.c
 	"indice.h"
 
 1748135081 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\indice.h
 	"Socios.h"
 	<math.h>
 
-1748132350 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\menu.h
+1748726312 c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\menu.h
 	"indice.h"
 
-1748132350 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\menu.c
+1748729267 source:c:\users\lucas\documents\github\tp_topicosprogramacion_1erparte\tp_1erparte\menu.c
 	"Menu.h"
 
 1748120051 source:d:\tptopicos\tp_topicosprogramacion_1erparte\tp_1erparte\fechas.c

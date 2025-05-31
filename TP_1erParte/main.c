@@ -25,11 +25,11 @@ int main()
 
     indice_crear(&idx);
     indice_cargar(&idx,NOM_BIN);
-    //mostrar_indice(&idx);
+    mostrar_indice(&idx);
 
     desplegar_menu();
-    scanf(" %c", &opcion);
-    fflush(stdin);
+    scanf("%c", &opcion);
+    opcion = tolower(opcion);
 
     ///O ABRO EL ARCHIVO Y MANDO PUNTERO, O ABRO Y CIERRO POR CADA ACCION DEL MENU
     while(opcion != 'f' && resp == TODO_OK)
@@ -37,7 +37,7 @@ int main()
         resp = seleccionar_opcion(&idx, opcion,NOM_BIN, &fechaProceso);
         desplegar_menu();
         scanf(" %c", &opcion);
-        fflush(stdin);
+        opcion = tolower(opcion);
     }
 
     if(resp!=TODO_OK)

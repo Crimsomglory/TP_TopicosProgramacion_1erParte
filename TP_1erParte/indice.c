@@ -90,7 +90,7 @@ int indice_insertar(t_indice* vec, const t_reg_indice* idx)
 
     while(pos<ult && comparar_regs(pos,idx) < 0)
         pos+=vec->tamElem;
-
+    //voy moviendo todos los elementos desde el ultimo dato ingresado, uno siempre a la derecha
     for(void* i = ult; i > pos ; i-=vec->tamElem)
         memcpy(i,i-vec->tamElem,vec->tamElem);
 
