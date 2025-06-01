@@ -10,6 +10,7 @@
 #define ERROR -1
 #define TODO_OK 1
 #define SOCIO_INVALIDO -3
+#define SEPARADOR_TXT ';'
 
 #define ERROR_ARCHIVO 7
 #define ARCHIVO_OK 8
@@ -35,5 +36,6 @@ void ingresar_datos(t_socio* socio);
 int abrir_archivo(FILE** ptr, const char* nomArch, const char* modo);
 void cerrar_archivo(FILE** ptr);
 void leer_archivo();//aux para comprobar datos escritos
+void pal_mayus(char* linea);
 
 #endif // SOCIOS_H_INCLUDED

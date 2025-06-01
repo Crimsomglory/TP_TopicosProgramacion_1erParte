@@ -73,7 +73,7 @@ int alta_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
     FILE* archivo;
     int resp;
 
-    puts("Ingrese el DNI alta");
+    printf("Ingrese el DNI alta: ");
     scanf("%ld",&reg.dni);
 
     resp = indice_buscar(idx,&reg);
@@ -160,6 +160,7 @@ int modificar_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
     FILE* archivo;
     int resp;
     char opcion;
+    int c;
 
     resp = abrir_archivo(&archivo,nArch,"r+b");
 
@@ -190,8 +191,8 @@ int modificar_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
         case 'a':
             printf("Ingrese nombre y apellido: ");
             //Lee todo el buffer y elimina el \n para que no lo tome en la proxima lectura
-            int c;
             while ((c = getchar()) != '\n' && c != EOF);
+
             fgets(socio.apYN, sizeof(socio.apYN), stdin);
             socio.apYN[strcspn(socio.apYN, "\n")] = '\0';
             normalizarNyAp(socio.apYN);
@@ -206,6 +207,7 @@ int modificar_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
         case 'c':
             printf("Ingrese sexo: ");
             scanf(" %c",&socio.sexo);
+            socio.sexo = toupper((unsigned char)socio.sexo);
             break;
 
         case 'd':
@@ -216,6 +218,7 @@ int modificar_socio(t_indice* idx, char* nArch, t_fecha* fechaP)
         case 'e':
             printf("Ingrese categoria: ");
             scanf("%s",socio.categoria);
+            pal_mayus(socio.categoria);
             break;
 
         case 'f':

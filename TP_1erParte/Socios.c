@@ -1,5 +1,7 @@
 #include "Socios.h"
 
+
+
 int crear_archivo_socios_bin(const char* nombrearchTxt, const char* nombreArchBin, const char* nombreArchErrorTxt, t_fecha* fechaProceso)
 {
     FILE* archTxt;
@@ -37,7 +39,7 @@ int crear_archivo_socios_bin(const char* nombrearchTxt, const char* nombreArchBi
         if(validar_socio(&socio, fechaProceso, 0) == TODO_OK)
         {
             //cargar socio bin correcto
-            normalizarNyAp(socio.apYN);
+
             fwrite(&socio,sizeof(t_socio),1,archBin);
         }
         else
@@ -152,32 +154,36 @@ void trozar_registro(t_socio *socio, char* linea)
     char* pos = strchr(linea,'\n');
     *pos = '\0';
 
-    pos = strrchr(linea,';');
+    pos = strrchr(linea,SEPARADOR_TXT);
     sscanf(pos+1,"%c",&socio->estado);
+    socio->estado = toupper((unsigned char)socio->estado);
     *pos = '\0';
 
-    pos = strrchr(linea,';');
+    pos = strrchr(linea,SEPARADOR_TXT);
     sscanf(pos+1,"%d/%d/%d",&socio->fechaCuota.d,&socio->fechaCuota.m,&socio->fechaCuota.y);
     *pos = '\0';
 
-    pos = strrchr(linea,';');
+    pos = strrchr(linea,SEPARADOR_TXT);
     strcpy(socio->categoria, pos + 1);
+    pal_mayus(socio->categoria);
     *pos = '\0';
 
-    pos = strrchr(linea,';');
+    pos = strrchr(linea,SEPARADOR_TXT);
     sscanf(pos+1,"%d/%d/%d",&socio->fechaAfil.d,&socio->fechaAfil.m,&socio->fechaAfil.y);
     *pos = '\0';
 
-    pos = strrchr(linea,';');
+    pos = strrchr(linea,SEPARADOR_TXT);
     sscanf(pos+1,"%c",&socio->sexo);
+    socio->sexo = toupper((unsigned char)socio->sexo);
     *pos = '\0';
 
-    pos = strrchr(linea,';');
+    pos = strrchr(linea,SEPARADOR_TXT);
     sscanf(pos+1,"%d/%d/%d",&socio->fechaNac.d,&socio->fechaNac.m,&socio->fechaNac.y);
     *pos = '\0';
 
-    pos = strrchr(linea,';');
+    pos = strrchr(linea,SEPARADOR_TXT);
     strcpy(socio->apYN, pos + 1);
+    normalizarNyAp(socio->apYN);
     *pos = '\0';
 
     sscanf(linea,"%ld",&socio->dni);
@@ -276,23 +282,38 @@ void ingresar_datos(t_socio* socio)
     while ((c = getchar()) != '\n' && c != EOF);
 
     printf("Ingrese nombre y apellido: ");
-    fgets(socio->apYN, sizeof(socio->apYN), stdin);
-    socio->apYN[strcspn(socio->apYN, "\n")] = '\0';
+    fgets(socio->apYN, sizeof(socio->apYN), stdin); //viene con \n por input
+    socio->apYN[strcspn(socio->apYN, "\n")] = '\0'; //coloco \0 en en el salto de linea
+    normalizarNyAp(socio->apYN);
+
     fflush(stdin);
     printf("Ingrese fecha de nacimiento: ");
     scanf("%d/%d/%d",&socio->fechaNac.d,&socio->fechaNac.m,&socio->fechaNac.y);
 
     printf("Ingrese sexo: ");
     scanf(" %c",&socio->sexo);
+    socio->sexo = toupper(socio->sexo);
 
     printf("Ingrese fecha de afiliacion: ");
     scanf("%d/%d/%d",&socio->fechaAfil.d,&socio->fechaAfil.m,&socio->fechaAfil.y);
 
     printf("Ingrese categoria: ");
     scanf("%s",socio->categoria);
+    pal_mayus(socio->categoria);
 
     printf("Ingrese fecha de cuota: ");
     scanf("%d/%d/%d",&socio->fechaCuota.d,&socio->fechaCuota.m,&socio->fechaCuota.y);
 
     socio->estado = 'A';
+}
+
+void pal_mayus(char* linea)
+{
+    char* cad = linea;
+
+    while(*cad)
+    {
+        *cad = toupper((unsigned char)*cad);
+        cad++;
+    }
 }
